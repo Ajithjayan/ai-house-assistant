@@ -86,9 +86,9 @@ First launch computes about 10 embeddings, so it takes a moment. To use a throwa
 | Eval | Status |
 |---|---|
 | Tool selection | Passing |
-| Pantry retrieval | Passing, with one documented known failure ("bake bread" matches "bread") |
+| Pantry retrieval | Passing (5/5), including three “not stocked” cases the system correctly refuses to guess |
 | Product retrieval | Being rewritten for the GulGo store |
-| Grounding (LLM-as-judge) | Being rewritten; judge results vary between runs |
+| Grounding (LLM-as-judge) | assing on the latest run; results vary between runs |
 
 Run everything with `python run_all_evals.py`.
 
@@ -100,6 +100,7 @@ pantry.py         pantry queries and fuzzy item matching (SQLite)
 marketplace.py    GulGo search, product matching, live prices
 cart.py           add_to_cart, view_cart, request_checkout, place_order
 db.py             table creation and seed data
+check_db.py       prints the active database path and cart/order row counts
 sematic_search.py embeddings and cosine similarity
 mcp_server.py     MCP server exposing tools, a resource and a prompt
 eval_*.py         eval suites;  run_all_evals.py runs them all

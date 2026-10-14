@@ -36,23 +36,31 @@ def run_pantry_retrieval_eval(verbose=True):
 
 
 def run_product_retrieval_eval(verbose=True):
+    # Expectations depend on the GulGo catalog. If the catalog changes, update these.
     test_cases = [
-        {"query": "milk", "expected_any": ["Amul Taaza Toned Milk 500ml Pouch", "Nandini Good Life Toned Milk 1L Tetra Pack"]},
-        {"query": "bread", "expected_any": ["Britannia Bread Whole Wheat 400g", "Modern White Sandwich Bread 350g"]},
-        {"query": "rice", "expected_any": ["India Gate Basmati Rice 1kg", "Fortune Everyday Basmati Rice 5kg"]},
-        {"query": "coffee", "expected_any": ["Nescafe Classic Instant Coffee 100g", "Bru Gold Roast Coffee 50g"]},
+        {"query": "milk", "expect_keyword": "milk"},
+        {"query": "bread", "expect_keyword": "bread"},
+        {"query": "rice", "expect_keyword": None},      # GulGo does not stock rice
+        {"query": "coffee", "expect_keyword": None},    # store search returns milk; matcher must reject it
+        {"query": "potatoes", "expect_keyword": None},  # not stocked
     ]
 
     passed = 0
     for tc in test_cases:
-        query, expected_any = tc["query"], tc["expected_any"]
+        query, keyword = tc["query"], tc["expect_keyword"]
         actual = find_similar_product(query)
-        result = "PASS" if actual in expected_any else "FAIL"
-        if result == "PASS":
+
+        if keyword is None:
+            ok = "No confident match" in actual
+        else:
+            ok = keyword in actual.lower() and "available at" in actual
+
+        result = "PASS" if ok else "FAIL"
+        if ok:
             passed += 1
 
         if verbose:
-            print(f"[{result}] query: {query!r} -> expected: {expected_any!r}, actual: {actual!r}")
+            print(f"[{result}] query: {query!r} -> expect: {keyword or 'no match'}, actual: {actual!r}")
 
     return passed, len(test_cases)
 
@@ -63,5 +71,5 @@ if __name__ == "__main__":
     print(f"-> {p_passed}/{p_scored} passed\n")
 
     print("Product retrieval eval:")
-    pr_passed, pr_scored, pr_observed = run_product_retrieval_eval()
+    pr_passed, pr_scored = run_product_retrieval_eval()
     print(f"-> {pr_passed}/{pr_scored} passed")

@@ -20,7 +20,7 @@ def run_tool_selection_eval(verbose=True):
     test_cases = [
         {"query": "do we have any dairy?", "expected_tools": ["find_similar_pantry_item", "get_pantry_status"]},
         {"query": "what's low in stock?", "expected_tools": ["list_low_stock_items"]},
-        {"query": "how much would 2kg of rice cost?", "expected_tools": ["calculate_total"]},
+        {"query": "how much would 2 litres of milk cost?", "expected_tools": ["calculate_total"]},
         {"query": "What should I buy for my morning coffee?", "expected_tools":None },
         {"query": "I want to make pasta for dinner.", "expected_tools": None},
         {"query": "How much would 3kg of potatoes cost?", "expected_tools": ["get_price"]},
