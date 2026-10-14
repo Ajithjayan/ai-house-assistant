@@ -89,21 +89,6 @@ def find_similar_pantry_item(query:str)->str:
         return f"No confident match found for {query}"
     return best_item
 
-
-# def get_pantry_status(item_name: str)->str:
-#     item=pantry_stock.get(item_name.lower())
-#     if item is None:
-#         return f"Sorry {item_name} is not in the pantry."
-    
-#     quantity = item["quantity"]
-#     threshold = item["low_stock_threshold"]
-    
-#     if quantity<= threshold:
-#         return f"{item_name}: {quantity} {item['unit']} left, below threshold of {threshold}"
-#     else:
-#         return f"{item_name}: {quantity}{item['unit']}, sufficient"
-# DB_PATH=os.path.join(os.path.dirname(os.path.abspath(__file__)),"pantry.db")
-
 def get_pantry_status(item_name:str)->str:
     conn=sqlite3.connect(DB_PATH)
     row=conn.execute(
@@ -121,20 +106,6 @@ def get_pantry_status(item_name:str)->str:
     else:
         return f"{item_name}: {quantity:g} {unit}, sufficient"
 
-        
-    
-        
-
-    
-
-# def list_low_stock_items()->str:
-#     low_stock_items=[]
-#     for item_name, details in pantry_stock.items():
-#         if details["quantity"] <= details['low_stock_threshold']:
-#             low_stock_items.append(item_name)
-#     if not low_stock_items:
-#         return "Nothing to worry about, pantry is well stocked"
-#     return ', '.join(low_stock_items)
 
 def list_low_stock_items() -> str:
     conn = sqlite3.connect(DB_PATH)
@@ -148,29 +119,6 @@ def list_low_stock_items() -> str:
     return ", ".join(row[0] for row in rows)
 
 
-def record_order(item_name: str, quantity: float, unit_price: float, unit: str = "pcs") -> str:
-    item = item_name.lower()
-    conn = sqlite3.connect(DB_PATH)
-    try:
-        cur = conn.execute(
-            "UPDATE pantry SET quantity = quantity + ? WHERE item = ?",
-            (quantity, item)
-        )
-        newly_tracked = cur.rowcount == 0
-        if newly_tracked:
-            conn.execute(
-                "INSERT INTO pantry (item, quantity, unit, low_stock_threshold) VALUES (?, ?, ?, ?)",
-                (item, quantity, unit, 1)
-            )
-        conn.execute(
-            "INSERT INTO orders (item, quantity, unit_price, ordered_at) VALUES (?, ?, ?, ?)",
-            (item, quantity, unit_price, datetime.now().isoformat(timespec="seconds"))
-        )
-        conn.commit()
-        note = " (now tracked in the pantry)" if newly_tracked else ""
-        return f"Recorded {quantity:g} x {item_name} at ₹{unit_price:g}{note}."
-    finally:
-        conn.close()
     
         
     
