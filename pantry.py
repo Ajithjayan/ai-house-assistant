@@ -147,27 +147,6 @@ def list_low_stock_items() -> str:
         return "Nothing to worry about, pantry is well stocked"
     return ", ".join(row[0] for row in rows)
 
-#Getting Price Details:
-item_prices ={
-    "milk":80,
-    "eggs":6,
-    "rice":100,
-    "bread":50
-}
-# def get_price(item_name: str)-> str:
-#     item=item_prices.get(item_name.lower())
-#     if item is None:
-#         return f"Sorry no price details found for {item_name}."
-#     return f"the price of {item_name} is ₹{item}"
-
-# def calculate_total(item_name:str, quantity:float)->str:
-#     price=item_prices.get(item_name.lower())
-#     if price is None:
-#         return f"Sorry no price details found for {item_name}."
-#     total_amount= price * quantity
-#     return f'the total amount for {quantity} of {item_name} is ₹{total_amount}'
-
-
 
 def record_order(item_name: str, quantity: float, unit_price: float, unit: str = "pcs") -> str:
     item = item_name.lower()

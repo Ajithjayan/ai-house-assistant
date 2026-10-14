@@ -1,18 +1,13 @@
 # tool_use.py
-# pyrefly: ignore [missing-import]
-from cart import place_order
-# pyrefly: ignore [missing-import]
-from cart import view_cart
 from asyncio import protocols
 import os
 import json
 from dotenv import load_dotenv
 from openai import OpenAI
 from pantry import get_pantry_status , list_low_stock_items  , find_similar_pantry_item
-# pyrefly: ignore [missing-import]
 from marketplace import find_similar_product, get_price , calculate_total
 # pyrefly: ignore [missing-import]
-from cart import add_to_cart, view_cart, request_checkout
+from cart import add_to_cart, view_cart, request_checkout , place_order
 
 
 load_dotenv()
