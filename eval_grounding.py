@@ -18,9 +18,10 @@ SYSTEM_PROMPT = (
 
 def judge_grounding(context: str, reply: str) -> str:
     judge_response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
+        temperature=0,
         messages=[
-            {"role": "system", "content": "You are a strict evaluator. Given a CONTEXT and a REPLY, determine if the REPLY only uses information present in the CONTEXT, or if it adds outside facts/claims not present in the CONTEXT. Respond with exactly one word: GROUNDED or UNGROUNDED."},
+            {"role": "system", "content": "You are a strict evaluator. Given a CONTEXT and a REPLY, decide if every claim in the REPLY is stated in the CONTEXT. Opinions, quality judgments, health claims and recommendations count as claims: if the CONTEXT does not state them, the REPLY is UNGROUNDED. Friendly tone and rephrasing the CONTEXT are fine.Repeating names or words from the user’s question is not an outside claim. Saying you could not find information is always GROUNDED.Claims about what was found or searched also need support: if the REPLY says something was found, and the CONTEXT does not show it, the REPLY is UNGROUNDED.Respond with exactly one word: GROUNDED or UNGROUNDED."},
             {"role": "user", "content": f"CONTEXT:\n{context}\n\nREPLY:\n{reply}\n\nIs the REPLY grounded in the CONTEXT?"}
         ]
     )
@@ -61,8 +62,5 @@ if __name__ == "__main__":
     passed, scored = run_grounding_eval()
     print(f"\nGrounding eval: {passed}/{scored} passed")
 
-
-    for q in ["Amul milk", "Amul", "milk", "Amul Taaza", "Britannia bread", "bread", "English Oven bread"]:
-        print(q, "->", [p["title"] for p in search_gulgo(q)])
 
     
