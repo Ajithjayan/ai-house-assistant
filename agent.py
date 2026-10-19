@@ -1,5 +1,4 @@
 # tool_use.py
-from asyncio import protocols
 import os
 import json
 from dotenv import load_dotenv
@@ -21,7 +20,7 @@ SYSTEM_PROMPT = (
     "If a question could mean either (for example 'what milk is available'), ask one short clarifying question: 'At home, or in the store?' before using any tool. "
     "For any question about a specific product or brand (comparisons, attributes, nutrition, quality), use find_similar_product first. "
     "Answer ONLY using information returned by tools. Do not add facts, details, or claims that the tools did not return, even if you know them to be generally true. "
-    "If the tool results don't contain enough information to answer, say so explicitly."
+    "If the tool results don't contain enough information to answer, say so explicitly. "
     "Words like buy, order, shop, price, or 'in the store' mean STORE, so use find_similar_product without asking. "
     "Words like 'we', 'our', 'at home', or 'left' mean HOME. "
     "Only ask 'At home, or in the store?' when the question has neither kind of signal (for example 'what milk is available'). "
@@ -221,6 +220,8 @@ def run_agent(messages):
                     result = view_cart()
                 elif tool_call.function.name == 'request_checkout':
                     result = request_checkout()
+                else:
+                    result = f"Unknown tool: {tool_call.function.name}"
                 tool_result.append(result)
                 messages.append({
                     "role": "tool",
@@ -254,8 +255,8 @@ if __name__== "__main__":
         if "request_checkout" in tool_called:
             print("\n--- ORDER SUMMARY ---")
             print(view_cart())
-            answer = input("Place this order? (yes/no): ").strip().lower()
-            if answer == ("yes","y"):
+            answer = input("Place this order? (type yes or y to confirm): ").strip().lower()
+            if answer in ("yes","y"):
                 print(place_order())
             else:
                 print("Okay, nothing was ordered. Your cart is still saved.")
